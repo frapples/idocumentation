@@ -2,12 +2,15 @@
   "name": "idocumentation",
   "version": "0.1.0",
   "private": true,
+  "main": "elect.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "electron": "node_modules/electron/cli.js ."
   },
   "dependencies": {
+    "electron": "^2.0.3",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
