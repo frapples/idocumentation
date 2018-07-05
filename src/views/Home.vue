@@ -15,7 +15,7 @@
             <Input placeholder="search" />
           </div>
           <div class="doc-list">
-            <Tree :data="treeData"></Tree>
+            <DocIndexTree/>
           </div>
         </Sider>
         <Layout class="layout-main">
@@ -31,48 +31,13 @@
 <script lang="ts">
 import Vue from "vue";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import DocIndexTree from "@/components/DocIndexTree.vue";
 
 export default Vue.extend({
   name: "home",
   components: {
-    HelloWorld
+    DocIndexTree
   },
-  data() {
-    return {
-      treeData: [
-        {
-          title: "parent 1",
-          expand: true,
-          children: [
-            {
-              title: "parent 1-1",
-              expand: true,
-              children: [
-                {
-                  title: "leaf 1-1-1"
-                },
-                {
-                  title: "leaf 1-1-2"
-                }
-              ]
-            },
-            {
-              title: "parent 1-2",
-              expand: true,
-              children: [
-                {
-                  title: "leaf 1-2-1"
-                },
-                {
-                  title: "leaf 1-2-1"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    };
-  }
 });
 </script>
 
@@ -139,7 +104,7 @@ export default Vue.extend({
   overflow-y: auto;
   
   line-height: 1.0;
-  margin-left: -100px; 
+  margin-left: -80px; 
 }
 
 .doc-list >>> ul {
