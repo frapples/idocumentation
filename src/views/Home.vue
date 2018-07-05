@@ -19,7 +19,7 @@
           </div>
         </Sider>
         <Layout class="layout-main">
-          <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
+          <Content :style="{padding: '10px',  background: '#fff', height: '100%', width: '100%'}">
             <iframe class="doc-frame" src="https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Document.html"></iframe>
           </Content>
         </Layout>
