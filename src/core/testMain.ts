@@ -6,6 +6,7 @@ class TestMain {
         let documents = gDocumentLoader.documents();
         documents.forEach(doc => {
             console.log(doc.getName());
+            console.log(doc.getIndexTypes());
         });
         console.log("-------------");
     }

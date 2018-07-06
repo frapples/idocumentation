@@ -2,12 +2,13 @@ import path from "path";
 import fs from "fs";
 import plist from "plist";
 import { Document, DocumentType } from "../document";
-import sqlite3 from "sqlite3";
+// import sqlite3 from "sqlite3";
+import Sqlite3Wrapper from "@/core/db/sqlite3Wrapper";
 
 class DocsetDocument extends Document {
     private docpath: string;
     private plist: any = null;
-    private indexDb: sqlite3.Database;
+    private indexDb: Sqlite3Wrapper;
 
     public constructor(docpath: string) {
         super();
@@ -30,9 +31,10 @@ class DocsetDocument extends Document {
     }
 
     public getIndexTypes() {
-        this.indexDb.all("SELECT Z_PK as typeid, ZTYPENAME as typename FROM ZTOKENTYPE", (err, rows) => {
-            console.log(rows);
-        })
+        let rows = this.indexDb.exec("SELECT Z_PK as typeid, ZTYPENAME as typename FROM ZTOKENTYPE");
+        return rows.toArray().map((row) => {
+            return { id: row.typeid as string, name: row.typename as string };
+        });
     }
 
     private loadPlist() {
@@ -42,7 +44,8 @@ class DocsetDocument extends Document {
 
     private loadIndexDb() {
         let indexDbPath = path.join(this.docpath, "Contents", "Resources", "docSet.dsidx");
-        return sqlite3.cached.Database(indexDbPath, sqlite3.OPEN_READONLY);
+        // return sqlite3.cached.Database(indexDbPath, sqlite3.OPEN_READONLY);
+        return Sqlite3Wrapper.of(indexDbPath);
     }
 }
 
