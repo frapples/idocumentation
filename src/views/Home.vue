@@ -20,7 +20,7 @@
         </Sider>
         <Layout class="layout-main">
           <Content :style="{padding: '10px',  background: '#fff', height: '100%', width: '100%'}">
-            <iframe class="doc-frame" src="https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Document.html"></iframe>
+            <iframe ref="iframe" @load="onIframeLoad('iframe')" class="doc-frame" src="https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Document.html"></iframe>
           </Content>
         </Layout>
       </Layout>
@@ -32,12 +32,17 @@
 import Vue from "vue";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import DocIndexTree from "@/components/DocIndexTree.vue";
+import KeyCode from "keycode-js";
+import GlobalKeyDownMixin from "@/mixins/globalKeyDownMixin";
 
 export default Vue.extend({
   name: "home",
+  mixins: [GlobalKeyDownMixin],
   components: {
     DocIndexTree
   },
+  methods: {
+  }
 });
 </script>
 
@@ -102,9 +107,9 @@ export default Vue.extend({
 .doc-list {
   max-height: calc(100vh - 8rem);
   overflow-y: auto;
-  
-  line-height: 1.0;
-  margin-left: -80px; 
+
+  line-height: 1;
+  margin-left: -80px;
 }
 
 .doc-list >>> ul {
