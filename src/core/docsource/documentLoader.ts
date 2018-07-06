@@ -19,7 +19,7 @@ class DocumentLoader {
     }
 
     public documents() {
-        let result: String[];
+        let result: string[];
         if (fs.existsSync(this.documentDirectory())) {
             result = fs.readdirSync(this.documentDirectory());
         } else {
@@ -36,7 +36,7 @@ class DocumentLoader {
             if (t.isDocument(docpath)) {
                 return t.createDocument(docpath);
             }
-        })
+        });
         return docs[0] || null;
     }
 

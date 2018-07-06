@@ -39,10 +39,10 @@ export default Vue.extend({
   name: "home",
   mixins: [GlobalKeyDownMixin],
   components: {
-    DocIndexTree
+    DocIndexTree,
   },
   methods: {
-  }
+  },
 });
 </script>
 

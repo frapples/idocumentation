@@ -50,12 +50,12 @@ export default Vue.extend({
 
   computed: {
     treeData(): any {
-      return this.data.map(docs => {
-        (<any>docs)["render"] = this.createRender("ios-folder-outline");
-        docs.children = docs.children.map(type => {
-          (<any>type)["render"] = this.createRender("ios-folder-outline");
-          type.children = type.children.map(item => {
-              (<any>item)["render"] = this.createRender("ios-folder-outline");
+      return this.data.map((docs) => {
+        (docs as any).render = this.createRender("ios-folder-outline");
+        docs.children = docs.children.map((type) => {
+          (type as any).render = this.createRender("ios-folder-outline");
+          type.children = type.children.map((item) => {
+              (item as any).render = this.createRender("ios-folder-outline");
               return item;
           });
           return type;

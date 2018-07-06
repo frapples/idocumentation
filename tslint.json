@@ -8,12 +8,21 @@
       "node_modules/**"
     ]
   },
+
   "rules": {
+    "//参考": "https://palantir.github.io/tslint/rules/", 
     "quotemark": [false, "single"],
     "indent": [true, "spaces", 2],
     "interface-name": false,
     "ordered-imports": false,
     "object-literal-sort-keys": false,
-    "no-consecutive-blank-lines": false
+    "no-consecutive-blank-lines": false,
+    "eofline": false,
+    "no-trailing-whitespace": true,
+    "prefer-const": false,
+    "no-console": false,
+    "semicolon": true,
+    "trailing-comma": false,
+    "max-classes-per-file": false
   }
 }

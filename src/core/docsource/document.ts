@@ -1,8 +1,8 @@
 export abstract class Document {
-    abstract getDocpath(): string;
-    abstract getName(): string;
-    abstract getIndexPath(): string;
-    abstract getIndexTypes(): { id: string, name: string }[];
+    public abstract getDocpath(): string;
+    public abstract getName(): string;
+    public abstract getIndexPath(): string;
+    public abstract getIndexTypes(): Array<{ id: string, name: string }>;
 
 }
 

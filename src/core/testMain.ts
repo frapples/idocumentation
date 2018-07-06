@@ -4,7 +4,7 @@ class TestMain {
     public main() {
         console.log("-------------");
         let documents = gDocumentLoader.documents();
-        documents.forEach(doc => {
+        documents.forEach((doc) => {
             console.log(doc.getName());
             console.log(doc.getIndexTypes());
         });
