@@ -2,15 +2,19 @@ import path from "path";
 import fs from "fs";
 import plist from "plist";
 import { Document, DocumentType } from "../document";
+import sqlite3 from "sqlite3";
 
 class DocsetDocument extends Document {
     private docpath: string;
     private plist: any = null;
+    private indexDb: sqlite3.Database;
 
     public constructor(docpath: string) {
         super();
         this.docpath = docpath;
-        this.loadPlist();
+        this.plist = this.loadPlist();
+        this.indexDb = this.loadIndexDb();
+        this.getIndexTypes();
     }
 
     public getDocpath() {
@@ -25,11 +29,21 @@ class DocsetDocument extends Document {
         return this.plist.dashIndexFilePath || "";
     }
 
-    private loadPlist() {
-        let plistPath = path.join(this.docpath, "Contents", "Info.plist");
-        this.plist = plist.parse(fs.readFileSync(plistPath, 'utf8'));
+    public getIndexTypes() {
+        this.indexDb.all("SELECT Z_PK as typeid, ZTYPENAME as typename FROM ZTOKENTYPE", (err, rows) => {
+            console.log(rows);
+        })
     }
 
+    private loadPlist() {
+        let plistPath = path.join(this.docpath, "Contents", "Info.plist");
+        return plist.parse(fs.readFileSync(plistPath, 'utf8'));
+    }
+
+    private loadIndexDb() {
+        let indexDbPath = path.join(this.docpath, "Contents", "Resources", "docSet.dsidx");
+        return sqlite3.cached.Database(indexDbPath, sqlite3.OPEN_READONLY);
+    }
 }
 
 class DocsetDocumentType implements DocumentType {
