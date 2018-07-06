@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import fsUtils from "@/core/utils/fsUtils";
 
-import { DocumentType } from "./document";
+import {Document, DocumentType } from "./document";
 import gDocumentTypes from "./documentTypes";
 
 
@@ -26,8 +26,8 @@ class DocumentLoader {
             result = [];
         }
 
-        let documents = result.map((name) => this.loadDocument(name.toString())).filter((d) => d);
-        return documents;
+        let documents = result.map((name) => this.loadDocument(name.toString())).filter((d) => d != null);
+        return documents as Document[];
     }
 
     private loadDocument(name: string) {

@@ -1,4 +1,7 @@
 export abstract class Document {
+    abstract getDocpath(): string;
+    abstract getName(): string;
+    abstract getIndexPath(): string ;
 
 }
 

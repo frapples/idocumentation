@@ -1,16 +1,33 @@
 import path from "path";
+import fs from "fs";
+import plist from "plist";
 import { Document, DocumentType } from "../document";
 
 class DocsetDocument extends Document {
     private docpath: string;
+    private plist: any = null;
 
     public constructor(docpath: string) {
         super();
         this.docpath = docpath;
+        this.loadPlist();
     }
 
-    public getName() {
-        return path.basename(this.docpath);
+    public getDocpath() {
+        return this.docpath;
+    }
+
+    public getName(): string {
+        return this.plist.CFBundleName;
+    }
+
+    public getIndexPath(): string {
+        return this.plist.dashIndexFilePath || "";
+    }
+
+    private loadPlist() {
+        let plistPath = path.join(this.docpath, "Contents", "Info.plist");
+        this.plist = plist.parse(fs.readFileSync(plistPath, 'utf8'));
     }
 
 }
