@@ -6,11 +6,11 @@ class TestMain {
         let documents = gDocumentLoader.documents();
         documents.forEach((doc) => {
             console.log(doc.getName());
-            console.log(doc.getIndexTypes());
+            doc.getIndexTypes().then(console.log);
         });
 
         let document = documents[0];
-        console.log(document.getIndexsByType("1"));
+        document.getIndexsByType("1").then(console.log);
         console.log("-------------");
     }
 }

@@ -40,7 +40,9 @@ export default class Sqlite3Wrapper {
         this.db = new sql.Database(data);
     }
 
-    public exec(sqlStr: string) {
+    public async exec(sqlStr: string) {
+        // FIXME: Although the API is called asynchronously
+        // it can only be called synchronously because of the limitation of sql.js.
         let results = this.db.exec(sqlStr);
         let r = results.length === 0 ? { columns: [], values: [] } : results[0];
         return new RowsWrapper(r);

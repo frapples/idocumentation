@@ -30,14 +30,14 @@ class DocsetDocument extends Document {
         return this.plist.dashIndexFilePath || "";
     }
 
-    public getIndexTypes() {
-        let rows = this.indexDb.exec("SELECT Z_PK as typeid, ZTYPENAME as typename FROM ZTOKENTYPE");
+    public async getIndexTypes() {
+        let rows = await this.indexDb.exec("SELECT Z_PK as typeid, ZTYPENAME as typename FROM ZTOKENTYPE");
         return rows.toArray().map((row) => {
             return { id: row.typeid as string, name: row.typename as string };
         });
     }
 
-    public getIndexsByType(typeId: string) {
+    public async getIndexsByType(typeId: string) {
         let nid = Number(typeId);
         let sqlStr = `SELECT DISTINCT
             ztoken.z_pk AS id,
@@ -49,7 +49,7 @@ class DocsetDocument extends Document {
             ztokenmetainformation.zfile = zfilepath.z_pk AND
             ztoken.ztokentype = ${nid}`;
 
-        let rows = this.indexDb.exec(sqlStr);
+        let rows = await this.indexDb.exec(sqlStr);
         return rows.toArray().map((row) => {
             return { id: row.id as string, name: row.name as string, path: row.path as string };
         });
