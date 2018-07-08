@@ -1,11 +1,39 @@
 <template>
-    <div class="tree">
-        <Tree :data="treeData"></Tree>
-    </div>
+  <div class="tree">
+    <Tree :data="treeData" :load-data="loadData" @on-select-change="onSelect"></Tree>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue, { VNode } from "vue";
+
+import gDocumentLoader from "@/core/docsource/documentLoader";
+import { Document } from "@/core/docsource/document";
+
+enum NodeType {
+  DOC,
+  TYPE,
+  ITEM
+}
+
+interface Node {
+  type: NodeType;
+  id: string;
+  title: string;
+  index: number;
+  children: Node[];
+  loading: boolean;
+  render: any;
+}
+
+interface LeafNode {
+  type: NodeType;
+  id: string;
+  title: string;
+  index: number;
+  path: string;
+  render: any;
+}
 
 export default Vue.extend({
   name: "DocIndexTree",
@@ -13,54 +41,42 @@ export default Vue.extend({
 
   data() {
     return {
-      data: [
-        {
-          title: "parent 1",
-          expand: true,
-          children: [
-            {
-              title: "parent 1-1",
-              expand: true,
-              children: [
-                {
-                  title: "leaf 1-1-1"
-                },
-                {
-                  title: "leaf 1-1-2"
-                }
-              ]
-            },
-            {
-              title: "parent 1-2",
-              expand: true,
-              children: [
-                {
-                  title: "leaf 1-2-1"
-                },
-                {
-                  title: "leaf 1-2-1"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      documents: [] as Document[]
     };
+  },
+
+  created() {
+    this.documents = gDocumentLoader.documents();
   },
 
   computed: {
     treeData(): any {
-      return this.data.map((docs) => {
-        (docs as any).render = this.createRender("ios-folder-outline");
+      return this.rootData.map((docs) => {
+        docs.render = this.createRender("ios-folder-outline");
         docs.children = docs.children.map((type) => {
-          (type as any).render = this.createRender("ios-folder-outline");
+          type.render = this.createRender("ios-folder-outline");
           type.children = type.children.map((item) => {
-              (item as any).render = this.createRender("ios-folder-outline");
-              return item;
+            item.render = this.createRender("ios-folder-outline");
+            return item;
           });
           return type;
         });
         return docs;
+      });
+    },
+
+    rootData(): Node[] {
+      return this.documents.map((doc, idx) => {
+        let name = doc.getName();
+        return {
+          type: NodeType.DOC,
+          id: name,
+          index: idx,
+          title: doc.getName(),
+          loading: false,
+          children: [],
+          render: null
+        };
       });
     }
   },
@@ -94,6 +110,48 @@ export default Vue.extend({
       return (h: any, { root, node, data }: any) => {
         return this.render(h, { root, node, data }, icon);
       };
+    },
+
+    loadData(item: Node, callback: (data: any) => void) {
+      if (item.type === NodeType.DOC) {
+        this.documents[item.index].getIndexTypes().then((types) => {
+          let data = types.map((type, idx) => {
+            return {
+              type: NodeType.TYPE,
+              id: type.id,
+              index: idx,
+              title: type.name,
+              loading: false,
+              children: [],
+              render: null
+            };
+          });
+          callback(data);
+        });
+      }
+
+      if (item.type === NodeType.TYPE) {
+        this.documents[item.index].getIndexsByType(item.id).then((indexs) => {
+          let data = indexs.map((idxs) => {
+            return {
+              type: NodeType.ITEM,
+              id: idxs.id,
+              path: idxs.path,
+              index: item.index,
+              title: idxs.name,
+              render: null
+            } as LeafNode;
+          });
+          callback(data);
+        });
+      }
+
+    },
+
+    onSelect(nodes: Array<Node | LeafNode>) {
+      let node = nodes.filter((n) => n.type === NodeType.ITEM)[0] as LeafNode;
+      let url = this.documents[node.index].getUrl(node.path);
+      this.$emit("document-url-change", url);
     }
   }
 });
@@ -101,7 +159,13 @@ export default Vue.extend({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.tree {
+  text-align: left;
+}
+
+/*
 .tree >>> .ivu-tree li ul {
   padding-left: 35px;
 }
+*/
 </style>

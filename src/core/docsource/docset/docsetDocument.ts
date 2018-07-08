@@ -30,6 +30,10 @@ class DocsetDocument extends Document {
         return this.plist.dashIndexFilePath || "";
     }
 
+    public getUrl(docPath: string): string {
+        return "file://" + path.join(this.getDocpath(), "Contents/Resources/Documents", docPath);
+    }
+
     public async getIndexTypes() {
         let rows = await this.indexDb.exec("SELECT Z_PK as typeid, ZTYPENAME as typename FROM ZTOKENTYPE");
         return rows.toArray().map((row) => {

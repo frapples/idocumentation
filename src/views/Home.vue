@@ -10,17 +10,17 @@
         </div>
       </Header>
       <Layout>
-        <Sider hide-trigger class="layout-sidebar">
+        <Sider hide-trigger :width="300" class="layout-sidebar">
           <div class="doc-search">
             <Input placeholder="search" />
           </div>
           <div class="doc-list">
-            <DocIndexTree/>
+            <DocIndexTree @document-url-change="onDocUrlChange" />
           </div>
         </Sider>
         <Layout class="layout-main">
           <Content :style="{padding: '10px',  background: '#fff', height: '100%', width: '100%'}">
-            <iframe ref="iframe" @load="onIframeLoad('iframe')" class="doc-frame" src="https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Document.html"></iframe>
+            <iframe ref="iframe" @load="onIframeLoad('iframe')" class="doc-frame" :src=url></iframe>
           </Content>
         </Layout>
       </Layout>
@@ -39,10 +39,20 @@ export default Vue.extend({
   name: "home",
   mixins: [GlobalKeyDownMixin],
   components: {
-    DocIndexTree,
+    DocIndexTree
   },
+
+  data() {
+    return {
+      url: "https://docs.oracle.com/javase/8/docs/api/org/w3c/dom/Document.html"
+    };
+  },
+
   methods: {
-  },
+    onDocUrlChange(url: string) {
+      this.url = url;
+    }
+  }
 });
 </script>
 
@@ -109,7 +119,6 @@ export default Vue.extend({
   overflow-y: auto;
 
   line-height: 1;
-  margin-left: -80px;
 }
 
 .doc-list >>> ul {
