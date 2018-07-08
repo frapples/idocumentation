@@ -37,6 +37,24 @@ class DocsetDocument extends Document {
         });
     }
 
+    public getIndexsByType(typeId: string) {
+        let nid = Number(typeId);
+        let sqlStr = `SELECT DISTINCT
+            ztoken.z_pk AS id,
+            ztokenname AS name,
+            zpath AS path,
+            zanchor AS fragment
+        FROM ztoken, ztokenmetainformation, zfilepath, ztokentype
+        WHERE ztoken.zmetainformation = ztokenmetainformation.z_pk AND
+            ztokenmetainformation.zfile = zfilepath.z_pk AND
+            ztoken.ztokentype = ${nid}`;
+
+        let rows = this.indexDb.exec(sqlStr);
+        return rows.toArray().map((row) => {
+            return { id: row.id as string, name: row.name as string, path: row.path as string };
+        });
+    }
+
     private loadPlist() {
         let plistPath = path.join(this.docpath, "Contents", "Info.plist");
         return plist.parse(fs.readFileSync(plistPath, 'utf8'));

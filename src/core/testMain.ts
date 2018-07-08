@@ -8,6 +8,9 @@ class TestMain {
             console.log(doc.getName());
             console.log(doc.getIndexTypes());
         });
+
+        let document = documents[0];
+        console.log(document.getIndexsByType("1"));
         console.log("-------------");
     }
 }
