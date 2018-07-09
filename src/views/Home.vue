@@ -122,11 +122,11 @@ export default Vue.extend({
 }
 
 .doc-list >>> ul {
-  font-size: 15px;
+  font-size: 0.75rem;
 }
 
 .doc-list >>> li {
-  font-size: 15px;
+  font-size: 0.75rem;
 }
 
 .doc-frame {

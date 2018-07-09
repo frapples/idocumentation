@@ -20,7 +20,7 @@ interface Node {
   type: NodeType;
   id: string;
   title: string;
-  index: number;
+  docIndex: number;
   children: Node[];
   loading: boolean;
   render: any;
@@ -30,7 +30,7 @@ interface LeafNode {
   type: NodeType;
   id: string;
   title: string;
-  index: number;
+  docIndex: number;
   path: string;
   render: any;
 }
@@ -51,6 +51,7 @@ export default Vue.extend({
 
   computed: {
     treeData(): any {
+      console.log("Return treeData");
       return this.rootData.map((docs) => {
         docs.render = this.createRender("ios-folder-outline");
         docs.children = docs.children.map((type) => {
@@ -71,7 +72,7 @@ export default Vue.extend({
         return {
           type: NodeType.DOC,
           id: name,
-          index: idx,
+          docIndex: idx,
           title: doc.getName(),
           loading: false,
           children: [],
@@ -114,12 +115,12 @@ export default Vue.extend({
 
     loadData(item: Node, callback: (data: any) => void) {
       if (item.type === NodeType.DOC) {
-        this.documents[item.index].getIndexTypes().then((types) => {
-          let data = types.map((type, idx) => {
+        this.documents[item.docIndex].getIndexTypes().then((types) => {
+          let data = types.map((type) => {
             return {
               type: NodeType.TYPE,
               id: type.id,
-              index: idx,
+              docIndex: item.docIndex,
               title: type.name,
               loading: false,
               children: [],
@@ -131,17 +132,18 @@ export default Vue.extend({
       }
 
       if (item.type === NodeType.TYPE) {
-        this.documents[item.index].getIndexsByType(item.id).then((indexs) => {
-          let data = indexs.map((idxs) => {
+        this.documents[item.docIndex].getIndexsByType(item.id).then((indexs) => {
+          let data = indexs.map((index) => {
             return {
               type: NodeType.ITEM,
-              id: idxs.id,
-              path: idxs.path,
-              index: item.index,
-              title: idxs.name,
+              id: index.id,
+              path: index.path,
+              docIndex: item.docIndex,
+              title: index.name,
               render: null
             } as LeafNode;
           });
+          console.log("Loading Node:" + item.title);
           callback(data);
         });
       }
@@ -149,10 +151,13 @@ export default Vue.extend({
     },
 
     onSelect(nodes: Array<Node | LeafNode>) {
-      let node = nodes.filter((n) => n.type === NodeType.ITEM)[0] as LeafNode;
-      let url = this.documents[node.index].getUrl(node.path);
-      this.$emit("document-url-change", url);
+      nodes = nodes.filter((n) => n.type === NodeType.ITEM);
+      if (nodes.length > 0) {
+        let node = nodes[0] as LeafNode;
+        let url = this.documents[node.docIndex].getUrl(node.path);
+        this.$emit("document-url-change", url);
     }
+  }
   }
 });
 </script>
